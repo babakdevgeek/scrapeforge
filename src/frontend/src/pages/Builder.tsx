@@ -260,7 +260,11 @@ export function Builder() {
             </Field>
 
             <Field label="Headers" hint="JSON object. Useful for user-agent, accept-language, API keys.">
-              <Textarea value={builder.headers} onChange={(event) => builder.set({ headers: event.target.value })} rows={4} />
+              <Textarea
+                value={builder.headers}
+                onChange={(event) => builder.set({ headers: event.target.value })}
+                rows={4}
+              />
             </Field>
 
             <Field label="Cookies" hint="Cookie header string, copied straight out of devtools.">
@@ -291,14 +295,18 @@ export function Builder() {
                   <Field label="Username">
                     <Input
                       value={builder.authValues.username ?? ''}
-                      onChange={(event) => builder.set({ authValues: { ...builder.authValues, username: event.target.value } })}
+                      onChange={(event) =>
+                        builder.set({ authValues: { ...builder.authValues, username: event.target.value } })
+                      }
                     />
                   </Field>
                   <Field label="Password">
                     <Input
                       type="password"
                       value={builder.authValues.password ?? ''}
-                      onChange={(event) => builder.set({ authValues: { ...builder.authValues, password: event.target.value } })}
+                      onChange={(event) =>
+                        builder.set({ authValues: { ...builder.authValues, password: event.target.value } })
+                      }
                     />
                   </Field>
                 </>
@@ -311,14 +319,18 @@ export function Builder() {
                       <Input
                         value={builder.authValues.header ?? ''}
                         placeholder="x-api-key"
-                        onChange={(event) => builder.set({ authValues: { ...builder.authValues, header: event.target.value } })}
+                        onChange={(event) =>
+                          builder.set({ authValues: { ...builder.authValues, header: event.target.value } })
+                        }
                       />
                     </Field>
                   ) : null}
                   <Field label="Token">
                     <Input
                       value={builder.authValues.token ?? ''}
-                      onChange={(event) => builder.set({ authValues: { ...builder.authValues, token: event.target.value } })}
+                      onChange={(event) =>
+                        builder.set({ authValues: { ...builder.authValues, token: event.target.value } })
+                      }
                       className="font-mono text-[12.5px]"
                     />
                   </Field>
@@ -337,7 +349,9 @@ export function Builder() {
                     <Field key={key} label={label}>
                       <Input
                         value={builder.authValues[key] ?? ''}
-                        onChange={(event) => builder.set({ authValues: { ...builder.authValues, [key]: event.target.value } })}
+                        onChange={(event) =>
+                          builder.set({ authValues: { ...builder.authValues, [key]: event.target.value } })
+                        }
                         className="font-mono text-[12.5px]"
                       />
                     </Field>
@@ -354,9 +368,12 @@ export function Builder() {
             <h2 className="text-[13.5px] font-semibold">What ScrapeForge does with this</h2>
             <ul className="mt-3 space-y-2.5 text-[13px] leading-relaxed text-muted">
               <li>Headers and cookies ride along on every request, detail pages included.</li>
-              <li>Basic, bearer and header auth are applied by the HTTP client; form login runs in Chromium before extraction.</li>
+              <li>
+                Basic, bearer and header auth are applied by the HTTP client; form login runs in Chromium before
+                extraction.
+              </li>
               <li>Relative href and src values resolve against the page they came from, so detail URLs work unchanged.</li>
-              <li>Nothing leaves your machine: requests go out from this Node process, results stay in your local database.</li>
+              <li>Nothing leaves your machine: requests go out from this Node process, results stay local.</li>
             </ul>
           </div>
         </section>
@@ -370,7 +387,7 @@ export function Builder() {
               onClick={() => switchMode(mode)}
               className={cn(
                 'flex w-full items-start gap-4 rounded-lg border px-5 py-4 text-left transition-colors',
-                builder.mode === mode ? 'border-accent bg-[color:var(--accent)]/6' : 'border-line bg-raised hover:bg-sunken',
+                builder.mode === mode ? 'tint-accent-weak border-accent' : 'border-line bg-raised hover:bg-sunken',
               )}
             >
               <ModeTag mode={mode} className="mt-0.5" />
