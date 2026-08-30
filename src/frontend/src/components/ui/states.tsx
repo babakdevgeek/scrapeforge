@@ -39,7 +39,7 @@ export function Loading({ label = 'Loading', className }: { label?: string; clas
 
 export function ErrorNote({ message, retry }: { message: string; retry?: () => void }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:var(--danger)]/45 bg-[color:var(--danger)]/8 px-4 py-3 text-[13px]">
+    <div className="tint-danger border-danger-soft flex flex-wrap items-center justify-between gap-3 rounded-md border px-4 py-3 text-[13px]">
       <span className="text-danger">{message}</span>
       {retry ? (
         <button onClick={retry} className="font-medium text-danger underline underline-offset-4">
@@ -52,6 +52,7 @@ export function ErrorNote({ message, retry }: { message: string; retry?: () => v
 
 /** Skeleton rows for tables while the first page loads. */
 export function SkeletonRows({ rows = 6, cols = 5 }: { rows?: number; cols?: number }) {
+  const widths = [34, 12, 18, 14, 10];
   return (
     <div className="divide-y divide-line">
       {Array.from({ length: rows }).map((_, rowIndex) => (
@@ -59,8 +60,11 @@ export function SkeletonRows({ rows = 6, cols = 5 }: { rows?: number; cols?: num
           {Array.from({ length: cols }).map((__, colIndex) => (
             <div
               key={colIndex}
-              className="h-3 rounded-sm bg-sunken animate-pulse"
-              style={{ width: `${[34, 12, 18, 14, 10][colIndex % 5]}%`, animationDelay: `${(rowIndex * cols + colIndex) * 40}ms` }}
+              className="h-3 animate-pulse rounded-sm bg-sunken"
+              style={{
+                width: `${widths[colIndex % widths.length]}%`,
+                animationDelay: `${(rowIndex * cols + colIndex) * 40}ms`,
+              }}
             />
           ))}
         </div>

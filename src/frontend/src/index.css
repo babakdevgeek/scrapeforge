@@ -4,7 +4,7 @@
 
 /*
   Two themes, one token set.
-  Light: warm-tinted neutrals leaning violet, single accent doing the work.
+  Light: warm neutrals leaning violet, a single accent doing the work.
   Dark: Dracula, verbatim.
 */
 @layer base {
@@ -111,10 +111,6 @@
     box-shadow: var(--shadow-panel);
   }
 
-  .hairline {
-    @apply border-b border-line;
-  }
-
   .label {
     @apply text-2xs font-medium uppercase text-faint;
   }
@@ -126,10 +122,43 @@
   .code {
     @apply font-mono text-[12.5px] tabular;
   }
+}
 
-  .grid-lines {
-    background-image: linear-gradient(var(--line) 1px, transparent 1px);
-    background-size: 100% 28px;
+/*
+  Token colors live in CSS variables, so Tailwind cannot compute alpha for them.
+  These tints do it explicitly with color-mix, and stay variant-friendly
+  (hover:tint-danger, data-[highlighted]:tint-danger and so on).
+*/
+@layer utilities {
+  .tint-accent {
+    background-color: color-mix(in oklab, var(--accent) 13%, transparent);
+  }
+  .tint-accent-weak {
+    background-color: color-mix(in oklab, var(--accent) 7%, transparent);
+  }
+  .tint-info {
+    background-color: color-mix(in oklab, var(--info) 15%, transparent);
+  }
+  .tint-pink {
+    background-color: color-mix(in oklab, var(--pink) 14%, transparent);
+  }
+  .tint-ok {
+    background-color: color-mix(in oklab, var(--ok) 14%, transparent);
+  }
+  .tint-danger {
+    background-color: color-mix(in oklab, var(--danger) 11%, transparent);
+  }
+  .border-danger-soft {
+    border-color: color-mix(in oklab, var(--danger) 45%, transparent);
+  }
+  .scrim {
+    background-color: color-mix(in oklab, var(--sunken) 74%, transparent);
+  }
+  .topbar-surface {
+    background-color: color-mix(in oklab, var(--bg) 90%, transparent);
+  }
+  .field-ring:focus {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
   }
 }
 

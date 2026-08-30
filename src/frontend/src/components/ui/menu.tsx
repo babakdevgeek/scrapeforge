@@ -46,9 +46,7 @@ export function MenuItem({
       onSelect={onSelect}
       className={cn(
         'flex cursor-default select-none items-center justify-between gap-6 rounded-sm px-2 py-1.5 outline-none transition-colors',
-        tone === 'danger'
-          ? 'text-danger data-[highlighted]:bg-[color:var(--danger)]/12'
-          : 'text-ink data-[highlighted]:bg-sunken',
+        tone === 'danger' ? 'text-danger data-[highlighted]:tint-danger' : 'text-ink data-[highlighted]:bg-sunken',
       )}
     >
       <span className="flex items-center gap-2">{children}</span>

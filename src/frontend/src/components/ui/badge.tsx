@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils';
 import type { Mode, RunStatus } from '@/lib/api';
 
 const MODE_STYLE: Record<Mode, string> = {
-  html: 'text-accent bg-[color:var(--accent)]/12',
-  api: 'text-info bg-[color:var(--info)]/12',
-  browser: 'text-pink bg-[color:var(--pink)]/12',
+  html: 'text-accent tint-accent',
+  api: 'text-info tint-info',
+  browser: 'text-pink tint-pink',
 };
 
 export function ModeTag({ mode, className }: { mode: Mode; className?: string }) {
@@ -34,7 +34,9 @@ export function StatusDot({ status, label }: { status: RunStatus; label?: boolea
     <span className="inline-flex items-center gap-2">
       <span className="relative flex h-2 w-2 shrink-0">
         {status === 'running' ? (
-          <span className={cn('absolute inline-flex h-full w-full rounded-full opacity-60 animate-pulse', STATUS_COLOR[status])} />
+          <span
+            className={cn('absolute inline-flex h-full w-full animate-pulse rounded-full opacity-60', STATUS_COLOR[status])}
+          />
         ) : null}
         <span className={cn('relative inline-flex h-2 w-2 rounded-full', STATUS_COLOR[status])} />
       </span>
