@@ -1,0 +1,89 @@
+// ScrapeForge application database.
+// Scraped rows themselves live in the destination data store (see src/database/).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Scraper {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  mode        String // html | api | browser
+  config      String // JSON string of the scraper configuration
+  tags        String   @default("")
+  favorite    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  versions ScraperVersion[]
+  runs     Run[]
+  records  ScrapedRecord[]
+}
+
+model ScraperVersion {
+  id        String   @id @default(cuid())
+  scraperId String
+  version   Int
+  config    String
+  note      String?
+  createdAt DateTime @default(now())
+
+  scraper Scraper @relation(fields: [scraperId], references: [id], onDelete: Cascade)
+
+  @@unique([scraperId, version])
+}
+
+model Run {
+  id         String    @id @default(cuid())
+  scraperId  String
+  mode       String
+  status     String    @default("queued") // queued | running | success | failed | cancelled
+  pages      Int       @default(0)
+  totalPages Int?
+  itemCount  Int       @default(0)
+  errorCount Int       @default(0)
+  error      String?
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  durationMs Int?
+
+  scraper Scraper         @relation(fields: [scraperId], references: [id], onDelete: Cascade)
+  logs    LogLine[]
+  records ScrapedRecord[]
+
+  @@index([scraperId])
+  @@index([status])
+}
+
+model LogLine {
+  id      Int      @id @default(autoincrement())
+  runId   String
+  level   String // debug | info | warn | error | success
+  message String
+  meta    String?
+  ts      DateTime @default(now())
+
+  run Run @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId])
+}
+
+model ScrapedRecord {
+  id        Int      @id @default(autoincrement())
+  scraperId String
+  runId     String?
+  hash      String
+  data      String // JSON string of the extracted item
+  createdAt DateTime @default(now())
+
+  scraper Scraper @relation(fields: [scraperId], references: [id], onDelete: Cascade)
+  run     Run?    @relation(fields: [runId], references: [id], onDelete: SetNull)
+
+  @@index([scraperId, hash])
+  @@index([runId])
+}

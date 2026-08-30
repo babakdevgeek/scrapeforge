@@ -1,0 +1,21 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+
+# databases
+*.db
+*.db-journal
+*.sqlite
+src/backend/prisma/*.db*
+data/
+
+# runtime artifacts
+exports/
+screenshots/
+.playwright/
+.cache/
+.vite/
+.DS_Store
