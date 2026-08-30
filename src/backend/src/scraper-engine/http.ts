@@ -6,7 +6,7 @@ function cookieHeader(cookies: Target['cookies']): string | undefined {
   if (!cookies) return undefined;
   if (typeof cookies === 'string') return cookies;
   return Object.entries(cookies)
-    .map(([k, v]) => `${k}=${v}`)
+    .map(([name, value]) => `${name}=${value}`)
     .join('; ');
 }
 
@@ -29,16 +29,17 @@ export function createClient(target: Target = {}): AxiosInstance {
     timeout: target.timeout_ms ?? env.defaultTimeout,
     headers,
     maxRedirects: 5,
-    validateStatus: undefined,
+    // Status handling lives in the engines so failures land in the run log with context.
+    validateStatus: () => true,
     auth:
       auth?.type === 'basic' && auth.username
         ? { username: auth.username, password: auth.password ?? '' }
         : undefined,
-  } as never);
+  });
 }
 
 export async function fetchHtml(client: AxiosInstance, url: string): Promise<string> {
-  const res = await client.get(url, { responseType: 'text', transformResponse: (d) => d });
-  if (res.status >= 400) throw new Error(`GET ${url} responded ${res.status}`);
-  return String(res.data ?? '');
+  const response = await client.get(url, { responseType: 'text', transformResponse: (data) => data });
+  if (response.status >= 400) throw new Error(`GET ${url} responded ${response.status}`);
+  return String(response.data ?? '');
 }
