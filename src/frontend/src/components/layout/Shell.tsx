@@ -45,8 +45,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const mod = event.metaKey || event.ctrlKey;
-      const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes((event.target as HTMLElement)?.tagName) ||
-        (event.target as HTMLElement)?.isContentEditable;
+      const element = event.target as HTMLElement | null;
+      const typing =
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(element?.tagName ?? '') || Boolean(element?.isContentEditable);
 
       if (mod && event.key.toLowerCase() === 'k') {
         event.preventDefault();
@@ -146,9 +147,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
               className="hidden h-8 items-center gap-2 rounded border border-line px-2.5 text-[12.5px] text-faint transition-colors hover:border-line-strong hover:text-muted sm:flex"
             >
               Jump to
-              <kbd className="font-mono text-2xs">\u2318K</kbd>
+              <kbd className="font-mono text-2xs">⌘K</kbd>
             </button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} title="Toggle theme (\u2318J)">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} title="Toggle theme (⌘J)">
               {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
             <Button variant="primary" size="sm" onClick={() => navigate('/scrapers/new')}>
@@ -167,10 +168,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               to={to}
               end={exact}
               className={({ isActive }) =>
-                cn(
-                  'flex flex-1 flex-col items-center gap-1 py-2.5 text-2xs',
-                  isActive ? 'text-accent' : 'text-faint',
-                )
+                cn('flex flex-1 flex-col items-center gap-1 py-2.5 text-2xs', isActive ? 'text-accent' : 'text-faint')
               }
             >
               <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />

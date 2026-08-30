@@ -26,7 +26,10 @@ export function CommandPalette() {
     if (!paletteOpen) return;
     setQuery('');
     setCursor(0);
-    api.scrapers().then(setScrapers).catch(() => setScrapers([]));
+    api
+      .scrapers()
+      .then(setScrapers)
+      .catch(() => setScrapers([]));
   }, [paletteOpen]);
 
   const actions = useMemo<Action[]>(() => {
@@ -45,7 +48,7 @@ export function CommandPalette() {
       {
         id: 'theme',
         label: 'Toggle theme',
-        hint: '\u2318J',
+        hint: '⌘J',
         icon: <Moon className="h-4 w-4" />,
         run: () => {
           toggleTheme();
@@ -56,21 +59,21 @@ export function CommandPalette() {
 
     const scraperActions: Action[] = scrapers.flatMap((scraper) => [
       {
-        id: `open-${scraper.id}`,
+        id: 'open-' + scraper.id,
         label: scraper.name,
         hint: 'edit',
         icon: <ModeTag mode={scraper.mode} />,
-        run: go(`/scrapers/${scraper.id}`),
+        run: go('/scrapers/' + scraper.id),
       },
       {
-        id: `run-${scraper.id}`,
-        label: `Run ${scraper.name}`,
+        id: 'run-' + scraper.id,
+        label: 'Run ' + scraper.name,
         icon: <Play className="h-4 w-4" />,
         run: async () => {
           setPalette(false);
           try {
             const run = await api.run(scraper.id);
-            navigate(`/runs/${run.id}`);
+            navigate('/runs/' + run.id);
           } catch (error) {
             toast((error as Error).message, 'error');
           }
@@ -95,11 +98,11 @@ export function CommandPalette() {
           onKeyDown={(event) => {
             if (event.key === 'ArrowDown') {
               event.preventDefault();
-              setCursor((c) => Math.min(c + 1, results.length - 1));
+              setCursor((current) => Math.min(current + 1, results.length - 1));
             }
             if (event.key === 'ArrowUp') {
               event.preventDefault();
-              setCursor((c) => Math.max(c - 1, 0));
+              setCursor((current) => Math.max(current - 1, 0));
             }
             if (event.key === 'Enter') {
               event.preventDefault();
@@ -124,7 +127,7 @@ export function CommandPalette() {
           </div>
 
           {results.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[13px] text-muted">Nothing matches \u201c{query}\u201d.</p>
+            <p className="px-4 py-8 text-center text-[13px] text-muted">Nothing matches that.</p>
           ) : (
             <ul className="max-h-[52vh] overflow-y-auto p-1.5">
               {results.map((action, index) => (
@@ -147,8 +150,8 @@ export function CommandPalette() {
           )}
 
           <footer className="flex items-center gap-4 border-t border-line px-4 py-2 text-2xs text-faint">
-            <span>\u2191\u2193 navigate</span>
-            <span>\u21b5 select</span>
+            <span>↑↓ navigate</span>
+            <span>↵ select</span>
             <span>esc close</span>
           </footer>
         </Dialog.Content>
