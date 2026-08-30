@@ -1,0 +1,29 @@
+{
+  "mode": "html",
+  "target": { "url": "https://books.toscrape.com/catalogue/page-1.html" },
+  "item": {
+    "selector": "article.product_pod",
+    "limit": 8,
+    "fields": {
+      "title": { "selector": "h3 a", "type": "attribute", "attribute": "title" },
+      "detail_url": { "selector": "h3 a", "type": "attribute", "attribute": "href" }
+    }
+  },
+  "follow": {
+    "enabled": true,
+    "url_field": "detail_url",
+    "concurrency": 3,
+    "fields": {
+      "description": "#product_description ~ p",
+      "specs": { "selector": "table.table-striped", "type": "table" },
+      "stock_count": {
+        "selector": ".instock.availability",
+        "type": "regex",
+        "regex": "\\((\\d+) available\\)",
+        "group": 1
+      },
+      "images": { "selector": "#product_gallery img", "type": "list", "attribute": "src" }
+    }
+  },
+  "output": { "store": true, "table": "book_details", "mode": "upsert", "dedupe_on": ["title"] }
+}

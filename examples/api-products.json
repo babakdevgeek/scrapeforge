@@ -1,0 +1,25 @@
+{
+  "mode": "api",
+  "request": {
+    "url": "https://dummyjson.com/products",
+    "method": "GET",
+    "query": { "limit": 30 }
+  },
+  "response": {
+    "items": "$.products.*",
+    "total_path": "$.total",
+    "fields": {
+      "name": "$.title",
+      "price": { "path": "$.price", "type": "number" },
+      "category": "$.category",
+      "tags": { "path": "$.tags", "type": "list" }
+    }
+  },
+  "pagination": {
+    "type": "api",
+    "url_template": "https://dummyjson.com/products?limit=30&skip={offset}",
+    "step": 30,
+    "max_pages": 4
+  },
+  "output": { "store": true, "table": "products", "mode": "upsert", "dedupe_on": ["name"] }
+}

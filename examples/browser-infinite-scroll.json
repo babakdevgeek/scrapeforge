@@ -1,0 +1,21 @@
+{
+  "mode": "browser",
+  "target": { "url": "https://quotes.toscrape.com/scroll" },
+  "viewport": { "width": 1440, "height": 900 },
+  "block_resources": ["image", "font", "media"],
+  "actions": [
+    { "type": "wait_for", "selector": ".quote", "timeout_ms": 15000 },
+    { "type": "click", "selector": ".accept-cookies", "optional": true },
+    { "type": "scroll", "times": 3, "delay_ms": 700 }
+  ],
+  "item": {
+    "selector": ".quote",
+    "fields": {
+      "text": ".text",
+      "author": ".author",
+      "tags": { "selector": ".tag", "type": "list" }
+    }
+  },
+  "pagination": { "type": "infinite_scroll", "scroll_times": 5, "delay_ms": 900, "max_pages": 5 },
+  "output": { "store": true, "table": "quotes", "mode": "append", "dedupe_on": ["text"] }
+}
