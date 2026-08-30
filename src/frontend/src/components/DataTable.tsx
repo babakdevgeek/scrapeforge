@@ -75,11 +75,16 @@ export function DataTable({
                 key={column}
                 onSelect={() =>
                   setHidden((current) =>
-                    current.includes(column) ? current.filter((c) => c !== column) : [...current, column],
+                    current.includes(column) ? current.filter((entry) => entry !== column) : [...current, column],
                   )
                 }
               >
-                <span className={cn('font-mono text-[12.5px]', hidden.includes(column) ? 'text-faint line-through' : 'text-ink')}>
+                <span
+                  className={cn(
+                    'font-mono text-[12.5px]',
+                    hidden.includes(column) ? 'text-faint line-through' : 'text-ink',
+                  )}
+                >
                   {column}
                 </span>
               </MenuItem>
@@ -128,13 +133,7 @@ export function DataTable({
                         )}
                       >
                         {column}
-                        {active ? (
-                          dir === 'asc' ? (
-                            <ArrowUp className="h-3 w-3" />
-                          ) : (
-                            <ArrowDown className="h-3 w-3" />
-                          )
-                        ) : null}
+                        {active ? dir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" /> : null}
                       </button>
                     </th>
                   );
@@ -150,7 +149,7 @@ export function DataTable({
                   {visible.map((column) => (
                     <td key={column} className="max-w-[380px] px-4 py-2.5 align-top text-[13px] first:pl-5">
                       <span className={cn(typeof row[column] === 'number' && 'tabular font-mono text-[12.5px]')}>
-                        {truncate(row[column], 140) || <span className="text-faint">\u2014</span>}
+                        {truncate(row[column], 140) || <span className="text-faint">empty</span>}
                       </span>
                     </td>
                   ))}
@@ -164,7 +163,7 @@ export function DataTable({
       {total > 0 ? (
         <div className="flex flex-wrap items-center gap-3 border-t border-line px-4 py-2.5">
           <span className="tabular text-xs text-faint">
-            {(page - 1) * pageSize + 1}\u2013{Math.min(page * pageSize, total)} of {total.toLocaleString()}
+            {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total.toLocaleString()}
           </span>
 
           {onPageSize ? (
