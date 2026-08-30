@@ -3,7 +3,7 @@ import { runBus, type RunEvent } from '../lib/bus.js';
 import { getStore, hashItem } from '../database/index.js';
 import { execute } from '../scraper-engine/index.js';
 import type { Item, RunContext } from '../scraper-engine/types.js';
-import { validateConfig } from '../schemas/scraper-config.js';
+import { validateConfig, type ScraperConfig } from '../schemas/scraper-config.js';
 import { applyPlugins } from '../plugins/index.js';
 
 interface QueuedLog {
@@ -29,7 +29,9 @@ async function flushLogs() {
     flushing = false;
   }
 }
-setInterval(flushLogs, 750).unref();
+
+const flushTimer = setInterval(() => void flushLogs(), 750) as unknown as { unref?: () => void };
+flushTimer.unref?.();
 
 /**
  * Create a run row, execute the right engine and stream telemetry to the UI.
@@ -44,7 +46,7 @@ export async function startRun(scraperId: string, overrides?: { config?: unknown
   if (!parsed.ok) throw new Error(`Invalid configuration: ${parsed.errors.join('; ')}`);
   const config = parsed.config;
 
-  if (overrides?.limitPages && 'pagination' in config && config.pagination) {
+  if (overrides?.limitPages && config.pagination) {
     config.pagination.max_pages = Math.min(config.pagination.max_pages, overrides.limitPages);
   }
 
@@ -53,11 +55,11 @@ export async function startRun(scraperId: string, overrides?: { config?: unknown
   return run;
 }
 
-async function executeRun(runId: string, scraperId: string, config: NonNullable<ReturnType<typeof validateConfig>['config']>) {
+async function executeRun(runId: string, scraperId: string, config: ScraperConfig) {
   const started = Date.now();
   const collected: Item[] = [];
   const seen = new Set<string>();
-  const output = 'output' in config ? config.output : undefined;
+  const output = config.output;
   const dedupeOn = output?.dedupe_on;
 
   const emit = (event: RunEvent) => runBus.emitRun(runId, event);
@@ -119,7 +121,10 @@ async function executeRun(runId: string, scraperId: string, config: NonNullable<
         mode: output.mode ?? 'append',
         dedupeOn: output.dedupe_on,
       });
-      ctx.log('success', `Stored ${written.inserted} new, ${written.updated} updated, ${written.skipped} duplicate rows in "${written.table}"`);
+      ctx.log(
+        'success',
+        `Stored ${written.inserted} new, ${written.updated} updated, ${written.skipped} duplicate rows in "${written.table}"`,
+      );
     }
 
     const durationMs = Date.now() - started;
@@ -155,6 +160,7 @@ async function executeRun(runId: string, scraperId: string, config: NonNullable<
     emit({ type: 'status', status: 'failed', error: message });
   } finally {
     await flushLogs();
+    runBus.clear(runId);
   }
 }
 
