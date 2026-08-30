@@ -21,7 +21,10 @@ export function Settings() {
   const services: [string, string][] = [
     ['Frontend', 'http://localhost:5173'],
     ['API', 'http://localhost:3000'],
-    ['API status', health.data ? health.data.status + ' / ' + health.data.dataStore : health.error ? 'unreachable' : 'checking'],
+    [
+      'API status',
+      health.data ? health.data.status + ' / ' + health.data.dataStore : health.error ? 'unreachable' : 'checking',
+    ],
     ['App database', 'Prisma + SQLite (src/backend/prisma)'],
     ['Data store', store.data ? store.data.driver + ' / ' + store.data.tables.length + ' table(s)' : 'checking'],
   ];
@@ -40,7 +43,7 @@ export function Settings() {
               onClick={() => setTheme(option)}
               className={cn(
                 'flex flex-1 items-center gap-3 rounded-md border px-4 py-3 text-left transition-colors',
-                theme === option ? 'border-accent bg-[color:var(--accent)]/6' : 'border-line hover:bg-sunken',
+                theme === option ? 'tint-accent-weak border-accent' : 'border-line hover:bg-sunken',
               )}
             >
               {option === 'light' ? <Sun className="h-4 w-4 text-accent" /> : <Moon className="h-4 w-4 text-accent" />}

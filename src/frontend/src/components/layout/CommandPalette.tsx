@@ -93,7 +93,7 @@ export function CommandPalette() {
   return (
     <Dialog.Root open={paletteOpen} onOpenChange={setPalette}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-[color:var(--sunken)]/72 data-[state=open]:animate-fade-in" />
+        <Dialog.Overlay className="scrim fixed inset-0 z-40 data-[state=open]:animate-fade-in" />
         <Dialog.Content
           onKeyDown={(event) => {
             if (event.key === 'ArrowDown') {
